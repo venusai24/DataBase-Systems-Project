@@ -76,28 +76,21 @@ BEGIN
 END;
 /
 
--- Procedure to add a new Prescription
-CREATE OR REPLACE PROCEDURE add_prescription(
-    p_patientid IN VARCHAR2,
-    p_doctorid IN VARCHAR2,
-    p_prescdate IN DATE,
+-- Procedure to add a new Prescription with Drug
+CREATE OR REPLACE PROCEDURE add_prescription_with_drug(
+    p_patientid      IN VARCHAR2,
+    p_doctorid       IN VARCHAR2,
+    p_prescdate      IN DATE,
+    p_tradename      IN VARCHAR2,
+    p_companyname    IN VARCHAR2,
+    p_quantity       IN NUMBER,
     p_prescriptionid OUT NUMBER
 ) AS
 BEGIN
     INSERT INTO Prescription (PatientID, DoctorID, PrescDate)
     VALUES (p_patientid, p_doctorid, p_prescdate)
     RETURNING PrescriptionID INTO p_prescriptionid;
-END;
-/
 
--- Procedure to add a new PrescriptionDrug
-CREATE OR REPLACE PROCEDURE add_prescription_drug(
-    p_prescriptionid IN NUMBER,
-    p_tradename IN VARCHAR2,
-    p_companyname IN VARCHAR2,
-    p_quantity IN NUMBER
-) AS
-BEGIN
     INSERT INTO PrescriptionDrug (PrescriptionID, TradeName, CompanyName, Quantity)
     VALUES (p_prescriptionid, p_tradename, p_companyname, p_quantity);
 END;
@@ -108,11 +101,12 @@ CREATE OR REPLACE PROCEDURE add_pharmacy_drug(
     p_pharmacy_name IN VARCHAR2,
     p_pharmcompany IN VARCHAR2,
     p_tradename IN VARCHAR2,
-    p_price IN NUMBER
+    p_price IN NUMBER,
+    p_quantity IN NUMBER
 ) AS
 BEGIN
-    INSERT INTO Pharmacy_Drug (Pharmacy_Name, PharmCompany, Tradename, Price)
-    VALUES (p_pharmacy_name, p_pharmcompany, p_tradename, p_price);
+    INSERT INTO Pharmacy_Drug (Pharmacy_Name, PharmCompany, Tradename, Price, Quantity)
+    VALUES (p_pharmacy_name, p_pharmcompany, p_tradename, p_price, p_quantity);
 END;
 /
 

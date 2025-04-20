@@ -68,8 +68,8 @@ CREATE TABLE PrescriptionDrug (
     CompanyName VARCHAR2(100),
     Quantity NUMBER,
     PRIMARY KEY (PrescriptionID, TradeName, CompanyName),
-    FOREIGN KEY (PrescriptionID) REFERENCES Prescription,
-    FOREIGN KEY (TradeName, CompanyName) REFERENCES Drug
+    FOREIGN KEY (PrescriptionID) REFERENCES Prescription.PrescriptionID,
+    FOREIGN KEY (TradeName, CompanyName) REFERENCES Drug.(Trade_Name, Company_Name)
 );
 
 

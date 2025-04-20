@@ -34,28 +34,27 @@ BEGIN
     FOR rec IN (
         SELECT pd.TradeName, pd.CompanyName, pd.Quantity
         FROM Prescription p
-        JOIN PrescriptionDrug pd ON p.PatientID = pd.PatientID
+        JOIN PrescriptionDrug pd ON p.PrescriptionID = pd.PrescriptionID
         WHERE p.PatientID = p_AadharID AND p.PrescDate = p_Date
     ) LOOP
         DBMS_OUTPUT.PUT_LINE('Drug: ' || rec.TradeName || ', Company: ' || rec.CompanyName || ', Qty: ' || rec.Quantity);
     END LOOP;
 END;
+/
 
 CREATE OR REPLACE PROCEDURE PrintDrugsByCompany (
     p_CompanyName VARCHAR2
 ) AS
-    v_TradeName Drug.TradeName%TYPE;
-    v_Formula   Drug.Formula%TYPE;
 BEGIN
     DBMS_OUTPUT.PUT_LINE('Drugs produced by company: ' || p_CompanyName);
     DBMS_OUTPUT.PUT_LINE('------------------------------------------');
 
     FOR drug_rec IN (
-        SELECT TradeName, Formula
+        SELECT Trade_Name, Formula
         FROM Drug
-        WHERE CompanyName = p_CompanyName
+        WHERE Company_Name = p_CompanyName
     ) LOOP
-        DBMS_OUTPUT.PUT_LINE('Trade Name: ' || drug_rec.TradeName || ' | Formula: ' || drug_rec.Formula);
+        DBMS_OUTPUT.PUT_LINE('Trade Name: ' || drug_rec.Trade_Name || ' | Formula: ' || drug_rec.Formula);
     END LOOP;
 END;
 /
