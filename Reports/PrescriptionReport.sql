@@ -41,13 +41,23 @@ BEGIN
     END LOOP;
 END;
 
-CREATE OR REPLACE FUNCTION GetDrugsByCompany (
+CREATE OR REPLACE PROCEDURE PrintDrugsByCompany (
     p_CompanyName VARCHAR2
-) RETURN SYS_REFCURSOR IS
-    c_drugs SYS_REFCURSOR;
+) AS
+    v_TradeName Drug.TradeName%TYPE;
+    v_Formula   Drug.Formula%TYPE;
 BEGIN
-    OPEN c_drugs FOR
-    SELECT * FROM Drug WHERE CompanyName = p_CompanyName;
-    RETURN c_drugs;
+    DBMS_OUTPUT.PUT_LINE('Drugs produced by company: ' || p_CompanyName);
+    DBMS_OUTPUT.PUT_LINE('------------------------------------------');
+
+    FOR drug_rec IN (
+        SELECT TradeName, Formula
+        FROM Drug
+        WHERE CompanyName = p_CompanyName
+    ) LOOP
+        DBMS_OUTPUT.PUT_LINE('Trade Name: ' || drug_rec.TradeName || ' | Formula: ' || drug_rec.Formula);
+    END LOOP;
 END;
+/
+
 

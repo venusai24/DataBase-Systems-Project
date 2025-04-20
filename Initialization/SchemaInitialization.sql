@@ -75,11 +75,12 @@ CREATE TABLE PrescriptionDrug (
 
 
 -- Create Pharmacy-Drug Sale table
-CREATE TABLE Pharmacy_Drug_Sale (
+CREATE TABLE Pharmacy_Drug (
     Pharmacy_Name VARCHAR2(100),
     PharmCompany VARCHAR2(100),
     Tradename VARCHAR2(100),
     Price NUMBER,
+    Quantity INT,
     PRIMARY KEY (Pharmacy_Name, PharmCompany, Tradename),
     CONSTRAINT fk_pharmacy_sale FOREIGN KEY (Pharmacy_Name) REFERENCES Pharmacy(Name),
     CONSTRAINT fk_pharma_company_sale FOREIGN KEY (PharmCompany) REFERENCES Pharmaceutical_Company(Company_Name),
@@ -98,3 +99,4 @@ CREATE TABLE Pharmacy_Contract (
     CONSTRAINT fk_pharmacy_contract FOREIGN KEY (Pharmacy_Name) REFERENCES Pharmacy(Name),
     CONSTRAINT fk_company_contract FOREIGN KEY (Company_Name) REFERENCES Pharmaceutical_Company(Company_Name)
 );
+
