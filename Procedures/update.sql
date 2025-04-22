@@ -56,11 +56,13 @@ CREATE OR REPLACE PROCEDURE UpdatePharmacyDrug (
     p_Pharmacy_Name VARCHAR2,
     p_CompanyName VARCHAR2,
     p_TradeName VARCHAR2,
-    p_Price NUMBER
+    p_Price NUMBER,
+    p_Quantity NUMBER
 ) AS
 BEGIN
     UPDATE Pharmacy_Drug
-    SET Price = p_Price
+    SET Price = p_Price,
+    Quantity = p_Quantity 
     WHERE Pharmacy_Name = p_Pharmacy_Name AND PharmCompany = p_CompanyName AND Tradename = p_TradeName;
 END;
 /

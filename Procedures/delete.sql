@@ -30,9 +30,6 @@ CREATE OR REPLACE PROCEDURE delete_pharmaceutical_company(
     p_company_name IN VARCHAR2
 ) AS
 BEGIN
-    DELETE FROM Pharmacy_Contract WHERE Company_Name = p_company_name;
-    DELETE FROM Pharmacy_Drug WHERE PharmCompany = p_company_name;
-    DELETE FROM Drug WHERE Company_Name = p_company_name;
     DELETE FROM Pharmaceutical_Company WHERE Company_Name = p_company_name;
 END;
 /

@@ -86,13 +86,56 @@ CREATE OR REPLACE PROCEDURE add_prescription_with_drug(
     p_quantity       IN NUMBER,
     p_prescriptionid OUT NUMBER
 ) AS
+    v_existing_prescid   Prescription.PrescriptionID%TYPE;
+    v_existing_date      DATE;
 BEGIN
-    INSERT INTO Prescription (PatientID, DoctorID, PrescDate)
-    VALUES (p_patientid, p_doctorid, p_prescdate)
-    RETURNING PrescriptionID INTO p_prescriptionid;
+    -- Check if a prescription with same patient, doctor, and date exists
+    SELECT PrescriptionID, PrescDate
+    INTO v_existing_prescid, v_existing_date
+    FROM Prescription
+    WHERE PatientID = p_patientid AND DoctorID = p_doctorid
+      AND PrescDate = p_prescdate
+    FETCH FIRST 1 ROWS ONLY;
 
+    -- If found, insert drug for the existing prescription
     INSERT INTO PrescriptionDrug (PrescriptionID, TradeName, CompanyName, Quantity)
-    VALUES (p_prescriptionid, p_tradename, p_companyname, p_quantity);
+    VALUES (v_existing_prescid, p_tradename, p_companyname, p_quantity);
+
+    p_prescriptionid := v_existing_prescid;
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        -- Check if a prescription with same patient and doctor but different date exists
+        BEGIN
+            SELECT PrescriptionID, PrescDate
+            INTO v_existing_prescid, v_existing_date
+            FROM Prescription
+            WHERE PatientID = p_patientid AND DoctorID = p_doctorid
+            FETCH FIRST 1 ROWS ONLY;
+
+            -- Delete old prescription and its drugs
+            DELETE FROM PrescriptionDrug WHERE PrescriptionID = v_existing_prescid;
+            DELETE FROM Prescription WHERE PrescriptionID = v_existing_prescid;
+
+            -- Insert new prescription
+            INSERT INTO Prescription (PatientID, DoctorID, PrescDate)
+            VALUES (p_patientid, p_doctorid, p_prescdate)
+            RETURNING PrescriptionID INTO p_prescriptionid;
+
+            -- Insert drug for the new prescription
+            INSERT INTO PrescriptionDrug (PrescriptionID, TradeName, CompanyName, Quantity)
+            VALUES (p_prescriptionid, p_tradename, p_companyname, p_quantity);
+
+        EXCEPTION
+            WHEN NO_DATA_FOUND THEN
+                -- No prescription exists for this patient and doctor, insert as usual
+                INSERT INTO Prescription (PatientID, DoctorID, PrescDate)
+                VALUES (p_patientid, p_doctorid, p_prescdate)
+                RETURNING PrescriptionID INTO p_prescriptionid;
+
+                INSERT INTO PrescriptionDrug (PrescriptionID, TradeName, CompanyName, Quantity)
+                VALUES (p_prescriptionid, p_tradename, p_companyname, p_quantity);
+        END;
 END;
 /
 

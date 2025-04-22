@@ -69,7 +69,7 @@ CREATE TABLE PrescriptionDrug (
     Quantity NUMBER,
     PRIMARY KEY (PrescriptionID, TradeName, CompanyName),
     FOREIGN KEY (PrescriptionID) REFERENCES Prescription.PrescriptionID,
-    FOREIGN KEY (TradeName, CompanyName) REFERENCES Drug.(Trade_Name, Company_Name)
+    FOREIGN KEY (TradeName, CompanyName) REFERENCES Drug(Trade_Name, Company_Name)
 );
 
 
@@ -83,7 +83,7 @@ CREATE TABLE Pharmacy_Drug (
     Quantity INT,
     PRIMARY KEY (Pharmacy_Name, PharmCompany, Tradename),
     CONSTRAINT fk_pharmacy_sale FOREIGN KEY (Pharmacy_Name) REFERENCES Pharmacy(Name),
-    CONSTRAINT fk_pharma_company_sale FOREIGN KEY (PharmCompany) REFERENCES Pharmaceutical_Company(Company_Name),
+    CONSTRAINT fk_pharma_company_sale FOREIGN KEY (PharmCompany) REFERENCES Pharmaceutical_Company(Company_Name) ON DELETE CASCADE,
     CONSTRAINT fk_drug_sale FOREIGN KEY (PharmCompany, Tradename) REFERENCES Drug(Company_Name, Trade_Name)
 );
 
